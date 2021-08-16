@@ -1,6 +1,13 @@
 import debounce from 'lodash/debounce';
+import { alert, error} from '@pnotify/core';
+
 import fetchCountries from './fetchCountries';
-import countryDataTpl from '../templates/country-data.hbs';
+
+
+import oneCountryDataTpl from '../templates/country-data.hbs';
+import manyCountriesTpl from '../templates/many-countries.hbs';
+
+export default createCountryMarkup;
 
 
 const refs = {
@@ -12,30 +19,37 @@ const refs = {
 
 
   function onInputChange(event) {
+
     const searchQuery = event.target.value;
-    console.log(searchQuery)
+    console.log(searchQuery);
+
+    refs.countriesList.innerHTML = '';
+
     fetchCountries(searchQuery)
-    .then (createCountryMarkup)
-    .catch(onFetchError)
+    
   };
 
-function createCountryMarkup (countries){
-    
-  return countries
-    .map((country) => countryDataTpl(country))
-    .join('');
+function createCountryMarkup (countryData){
 
-     refs.countriesList.insertAdjacentHTML("beforeend", countriesInHtml);
-  }  
-
-
-
-
-
-
-function onFetchError(error) {
-  alert ("The requested country is not found")
-  console.log(`Something's gone wrong: ${error}`)
+    if (countryData.length  === 1) {
+      refs.input.value = '';
+      refs.countriesList.insertAdjacentHTML("beforeend", oneCountryDataTpl(countryData));
+    } else if (countryData.length  >= 2 && countryData.length  <= 10) {
+      refs.countriesList.insertAdjacentHTML("beforeend", manyCountriesTpl(countryData));
+    } else if  (countryData.length  > 10) {
+    alert({
+      type: 'notice',
+      text: 'Please specific your specify. Too many matches',
+      delay: 1000,
+    });
+  } else if  (countryData.status === 404 || !countryData.length  > 1) {
+    alert({
+      type: 'error',
+      text: 'The required country is not found',
+      delay: 1000,
+    });
+    return 
+  }; 
 }
 
 
