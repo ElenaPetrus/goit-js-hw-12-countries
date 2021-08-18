@@ -21,7 +21,7 @@ const refs = {
   function onInputChange(event) {
 
     const searchQuery = event.target.value;
-    console.log(searchQuery);
+    // console.log(searchQuery);
 
     refs.countriesList.innerHTML = '';
 
