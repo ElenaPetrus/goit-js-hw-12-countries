@@ -15,13 +15,13 @@ const refs = {
     countriesList: document.getElementById('countries'),
   };
 
-  refs.input.addEventListener ("input", debounce(onInputChange, 500));
+  refs.input.addEventListener ("input", debounce(onInputChange, 1000));
 
 
   function onInputChange(event) {
 
-    const searchQuery = event.target.value;
-    // console.log(searchQuery);
+    const searchQuery = event.target.value.trim();
+    
 
     refs.countriesList.innerHTML = '';
 
@@ -30,8 +30,9 @@ const refs = {
   };
 
 function createCountryMarkup (countryData){
-
-    if (countryData.length  === 1) {
+  if (countryData.length  < 1) {
+    return
+    } else if (countryData.length  === 1) {
       refs.input.value = '';
       refs.countriesList.insertAdjacentHTML("beforeend", oneCountryDataTpl(countryData));
     } else if (countryData.length  >= 2 && countryData.length  <= 10) {
